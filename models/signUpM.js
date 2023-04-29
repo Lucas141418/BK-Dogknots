@@ -40,13 +40,16 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    // role: {
-    //   type: String,
-    //   required: true
-    // },
+    role: {
+      type: String,
+      required: true,
+      default: "user"
+    },
     approved:{
       type: Boolean,
       required: true,
+      // enum: ["pending", "approved", "rejected"]
+      // default: 'pending/'
       default: false
     },
     createdAt: {
@@ -60,5 +63,5 @@ const userSchema = new mongoose.Schema({
 
 
 
-const User = mongoose.model("new_users", userSchema)
+const User = mongoose.model("pending_users", userSchema)
 module.exports =  User

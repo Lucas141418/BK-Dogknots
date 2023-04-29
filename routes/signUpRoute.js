@@ -53,8 +53,8 @@ router.post('/loginUser', async (req, res) => {
 
     console.log("Password valid")
 
+    
     res.status(200).send(user)
-  
   } catch(error){
     console.error(error)
     res.status(500).send(error)
@@ -91,7 +91,8 @@ router.post("/login", async (req, res) => {
     number: body.number,
     birthDay: body.birthDay,
     photo: body.photo,
-    password:randomPassword});
+    password: randomPassword,
+  });
 
   try{
     console.log("Saving the user...", new_user)
