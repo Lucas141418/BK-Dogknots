@@ -8,6 +8,8 @@ const signUpRoute = require("./routes/signUpRoute")
 const reportingRoute = require("./routes/reportingRoute")
 const historialTraslados = require("./routes/historialTrasladosRoute")
 const routesUnidades = require("./routes/unidades")
+const transferRoutes = require("./routes/transferRoutes")
+
 
 mongoose.connect("mongodb+srv://elucas:OloTgqAUFVWJoNH3@cluster0.nlm2yvy.mongodb.net/?retryWrites=true&w=majority").then(() => console.log("Database Connected")) 
 .catch(error => {console.error("fail connecting to database", error)})
@@ -36,6 +38,8 @@ app.use(signUpRoute);
 app.use(reportingRoute);
 app.use(historialTraslados);
 app.use(routesUnidades)
+app.use(transferRoutes)
+
 
 app.listen(PORT, () => {
     console.log(`Using the port ${PORT}`)  
