@@ -1,5 +1,4 @@
 // codigo para saber cual es la ultima unidad guardada por id 
-
 const mongoose = require("mongoose"); 
 
 const SequenceSchema = new mongoose.Schema({
