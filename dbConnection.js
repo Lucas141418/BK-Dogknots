@@ -3,13 +3,14 @@ const mongoose = require("mongoose")
 const nodemailer = require("nodemailer")
 const moment = require("moment")
 const cors = require("cors")
+const cookieParser = require('cookie-parser');
 const router = express.Router()
 const signUpRoute = require("./routes/signUpRoute")
 const reportingRoute = require("./routes/reportingRoute")
 const historialTraslados = require("./routes/historialTrasladosRoute")
 const routesUnidades = require("./routes/unidades")
 const transferRoutes = require("./routes/transferRoutes")
-
+const usersRouter = require("./routes/users")
 
 mongoose.connect("mongodb+srv://elucas:OloTgqAUFVWJoNH3@cluster0.nlm2yvy.mongodb.net/?retryWrites=true&w=majority").then(() => console.log("Database Connected")) 
 .catch(error => {console.error("fail connecting to database", error)})
@@ -18,8 +19,10 @@ const PORT = 3000;
 
 
 const app = express();
-app.use(cors({}))
 app.use(express.json()) 
+app.use(cors({}))
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 
 app.use((request, response, next) => {
@@ -37,9 +40,9 @@ app.get("/", (request ,response) => {
 app.use(signUpRoute);
 app.use(reportingRoute);
 app.use(historialTraslados);
+app.use("/users", usersRouter)
 app.use(routesUnidades)
 app.use(transferRoutes)
-
 
 app.listen(PORT, () => {
     console.log(`Using the port ${PORT}`)  
