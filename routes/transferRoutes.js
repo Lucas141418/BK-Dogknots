@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const transferModel = require("../models/traslados");
-const functionTransferId = require("../bl/transfers");
+// const functionTransferId = require("../bl/transfers");
 
 const app = express();
 
