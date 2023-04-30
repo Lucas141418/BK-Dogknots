@@ -6,7 +6,7 @@ const cors = require("cors")
 const cookieParser = require('cookie-parser');
 const router = express.Router()
 const signUpRoute = require("./routes/signUpRoute")
-const reportingRoute = require("./routes/reportingRoute")
+// const reportingRoute = require("./routes/reportingRoute")
 const historialTraslados = require("./routes/historialTrasladosRoute")
 const routesUnidades = require("./routes/unidades")
 const transferRoutes = require("./routes/transferRoutes")
@@ -34,15 +34,14 @@ app.use((request, response, next) => {
   
 app.get("/", (request ,response) => {
     response.send("Hello, world!")
-   
 })       
 
 app.use(signUpRoute);
-app.use(reportingRoute);
+// app.use(reportingRoute);
 app.use(historialTraslados);
-app.use("/users", usersRouter)
-app.use(routesUnidades)
-app.use(transferRoutes)
+app.use(usersRouter);
+app.use(routesUnidades);
+app.use(transferRoutes);
 
 app.listen(PORT, () => {
     console.log(`Using the port ${PORT}`)  
