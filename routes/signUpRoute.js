@@ -6,10 +6,6 @@ const signUpM = require("../models/signUpM");
 const app = express()
 app.use(express.json())
 
-
-
-
-
 // route to get all users
 router.get("/login", async (req, res) => {
   

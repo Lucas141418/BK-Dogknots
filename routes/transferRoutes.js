@@ -1,0 +1,105 @@
+const express = require("express");
+const mongoose = require("mongoose");
+
+const transferModel = require("../models/traslados");
+
+const router = express.Router();
+
+
+const app = express();
+
+router.get("/hola", function (request, response) {
+  response.send("Hola mundo");
+});
+
+//Para traer todas las solicitudes de la base de datos
+
+router.get("/transfers", async function (request, response) {
+  try {
+    const trasfers = await transferModel.find();
+    response.send(trasfers);
+  } catch (error) {
+    response.status(500).send(error);
+  }
+});
+
+//para traer solicitudes mediante filtros
+
+//haciendo logica para traer valor:
+
+router.get("/transfers/pagination", async function (request, response) {
+  try {
+    // const filterOptions = {
+    //   isAccepted: false
+    // };
+    const pageOptions = {
+      page: request.query.page || 1,
+      limit: request.query.limit || 5,
+    };
+
+    let responseBody = await transferModel.paginate({}, pageOptions);
+    console.log(responseBody.docs);
+    response.send(responseBody.docs);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+async function getNextTransferId(Transfer) {
+  const latestDocument = await Transfer.findOne(
+    {},
+    { transferId: 1 },
+    { sort: { transferId: -1 } }
+  );
+
+  let nextTransferId;
+
+  if (latestDocument) {
+    const latestTransferId = latestDocument.transferId;
+    const numericValue = parseInt(latestTransferId, 10);
+    const incrementedValue = numericValue + 1;
+    nextTransferId = incrementedValue.toString().padStart(6, "0");
+  } else {
+    nextTransferId = "000001";
+  }
+
+  return nextTransferId;
+}
+
+//Para crear una solicitud de traslado usando POST
+
+router.post("/createTransfer", async function (request, response) {
+  //console.log("Atendiendo a la ruta POST /createTransfer", request);
+  try {
+    let body = request.body;
+    console.log("Imprimiendo body original", body);
+    const nextTransferId = await getNextTransferId(transferModel);
+    let modifiedBody = {
+      ...body,
+      transferId: nextTransferId,
+      isPending: true,
+    };
+    console.log("Imprimiendo body con el transfer id incluido", modifiedBody);
+    const transfer = new transferModel(modifiedBody);
+    await transfer.save();
+    response.status(201).send(modifiedBody);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//para traer un traslado por id
+
+router.get("/transfer", async (req, res) => {
+  const id = req.query.id;
+  try {
+    console.log(`Attending the GET route: /transfer/${id}`);
+    const transferbyId = await transferModel.find({ transferId: id });
+    console.log(transferbyId);
+    res.status(200).send(transferbyId);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+module.exports = router;

@@ -5,7 +5,7 @@ var sendEmail = require("../lib/emailUsers");
 
 /* GET users listing. */
 // localhost:3000/users/
-router.get("/", async function (req, res, next) {
+router.get("/users", async function (req, res) {
   try {
     var users = await userModel.find({});
     res.status(201).json(users);
@@ -17,7 +17,7 @@ router.get("/", async function (req, res, next) {
 });
 
 // localhost:3000/users/:id
-router.get('/:id', async (req, res) => {
+router.get('/users/:id', async (req, res) => {
   var id = req.params.id;
   //res.send('users ID:' + id);
   try {
@@ -31,14 +31,16 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create user
-router.post('/', async (req, res) => {
+router.post('/users', async (req, res) => {
+  //We call the route which we are working
   console.log('POST /users');
 
   if (!req.body) {
     console.error('Bad Request');
-    res.status(500).send('Bad Request');
+    res.status(400).send('Bad Request');
     return;
   }
+
   // generate password
   const randomPassword = Math.random().toString(36).slice(-8);
 
