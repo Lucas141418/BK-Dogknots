@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var userModel = require("../models/user"); // USER MODEL
-var sendEmail = require("../lib/emailUsers");
+var sendEmail = require("../lib/email"); // EMAIL
 
 /* GET users listing. */
 // localhost:3000/users/
