@@ -2,17 +2,19 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const transferModel = require("../models/traslados");
-// const functionTransferId = require("../bl/transfers");
+
+const router = express.Router();
+
 
 const app = express();
 
-app.get("/hola", function (request, response) {
+router.get("/hola", function (request, response) {
   response.send("Hola mundo");
 });
 
 //Para traer todas las solicitudes de la base de datos
 
-app.get("/transfers", async function (request, response) {
+router.get("/transfers", async function (request, response) {
   try {
     const trasfers = await transferModel.find();
     response.send(trasfers);
@@ -25,17 +27,17 @@ app.get("/transfers", async function (request, response) {
 
 //haciendo logica para traer valor:
 
-app.get("/transfers/pagination", async function (request, response) {
+router.get("/transfers/pagination", async function (request, response) {
   try {
     // const filterOptions = {
     //   isAccepted: false
     // };
     const pageOptions = {
       page: request.query.page || 1,
-      limit: request.query.limit || 2,
+      limit: request.query.limit || 5,
     };
 
-    responseBody = await transferModel.paginate({}, pageOptions);
+    let responseBody = await transferModel.paginate({}, pageOptions);
     console.log(responseBody.docs);
     response.send(responseBody.docs);
   } catch (error) {
@@ -66,13 +68,17 @@ async function getNextTransferId(Transfer) {
 
 //Para crear una solicitud de traslado usando POST
 
-app.post("/createTransfer", async function (request, response) {
+router.post("/createTransfer", async function (request, response) {
   //console.log("Atendiendo a la ruta POST /createTransfer", request);
   try {
     let body = request.body;
     console.log("Imprimiendo body original", body);
     const nextTransferId = await getNextTransferId(transferModel);
-    let modifiedBody = { ...body, transferId: nextTransferId };
+    let modifiedBody = {
+      ...body,
+      transferId: nextTransferId,
+      isPending: true,
+    };
     console.log("Imprimiendo body con el transfer id incluido", modifiedBody);
     const transfer = new transferModel(modifiedBody);
     await transfer.save();
@@ -82,4 +88,18 @@ app.post("/createTransfer", async function (request, response) {
   }
 });
 
-module.exports = app;
+//para traer un traslado por id
+
+router.get("/transfer", async (req, res) => {
+  const id = req.query.id;
+  try {
+    console.log(`Attending the GET route: /transfer/${id}`);
+    const transferbyId = await transferModel.find({ transferId: id });
+    console.log(transferbyId);
+    res.status(200).send(transferbyId);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+module.exports = router;

@@ -16,10 +16,11 @@ const activosRouter = require("./routes/activos")
 mongoose.connect("mongodb+srv://elucas:OloTgqAUFVWJoNH3@cluster0.nlm2yvy.mongodb.net/?retryWrites=true&w=majority").then(() => console.log("Database Connected")) 
 .catch(error => {console.error("fail connecting to database", error)})
 
+
 const PORT = 3000;
 
-
 const app = express();
+
 app.use(express.json()) 
 app.use(cors({}))
 app.use(express.urlencoded({ extended: false }));
@@ -37,16 +38,19 @@ app.get("/", (request ,response) => {
     response.send("Hello, world!")
 })       
 
+
 app.use(signUpRoute);
 // app.use(reportingRoute);
 app.use(historialTraslados);
+
 app.use(usersRouter);
 app.use(routesUnidades);
 app.use(transferRoutes);
 app.use(activosRouter)
 
-app.listen(PORT, () => {
-    console.log(`Using the port ${PORT}`)  
-})
 
-// Routes  
+app.listen(PORT, () => {
+  console.log(`Using the port ${PORT}`);
+});
+
+// Routes
