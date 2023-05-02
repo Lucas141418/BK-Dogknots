@@ -70,7 +70,6 @@ router.post('/', async (req, res) => {
     //})
     // send json response
     res.status(201).json(newUser);
-    // console.log(res);
   } catch (error) {
 
     console.error('Could not create user', error);
