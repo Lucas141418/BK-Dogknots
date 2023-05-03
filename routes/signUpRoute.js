@@ -104,6 +104,9 @@ router.post("/login", async (req, res) => {
     console.log("User created", new_user);
 
 
+    res.status(201).send(new_user);
+
+
     // await sendEmail.sendEmail({
     //   email: new_user.correo,
     //   password: randomPassword
