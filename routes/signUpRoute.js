@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router();
 const sendEmail = require("../lib/email")
-const signUpM = require("../models/signUpM");
+const usersM = require("../models/user");
 
 const app = express()
 app.use(express.json())
@@ -10,7 +10,7 @@ app.use(express.json())
 router.get("/login", async (req, res) => {
   
   try{
-    const users = await signUpM.find({});
+    const users = await usersM.find({});
     res.send(users)
   } catch (error){
     res.status(500).send(error)
@@ -20,16 +20,16 @@ router.get("/login", async (req, res) => {
 
 // route to login a user
 router.post('/loginUser', async (req, res) => {
-  const {email, password} = req.body;
+  const {correo, password} = req.body;
 
-  if(!email || !password ){
-    console.error("Did not send the body to the petition", email, password);
+  if(!correo || !password ){
+    console.error("Did not send the body to the petition", correo, password);
     res.status(400).send("Did not send the body to the petition")
     return;
   }
   
   try{
-    const user = await signUpM.findOne({ email: email });
+    const user = await usersM.findOne({ correo: correo });
     
 
     if(!user){
@@ -78,15 +78,18 @@ router.post("/login", async (req, res) => {
   const randomPassword = Math.random().toString(36).slice(-8);
 
 
-  const new_user = new signUpM(
-    {name: body.name,
-    lastName: body.lastName,
-    secondLastName: body.secondLastName,
-    identification: body.identification, 
-    email: body.email,
-    number: body.number,
-    birthDay: body.birthDay,
-    photo: body.photo,
+  const new_user = new usersM(
+    {nombre: body.nombre,
+    primerApellido: body.primerApellido,
+    segundoApellido: body.segundoApellido,
+    cedula: body.cedula, 
+    correo: body.correo,
+    telefono: body.telefono,
+    fechaNacimiento: body.fechaNacimiento,
+    unidad: "sin definir",
+    status: "inactivo",
+    role: "pendiente",
+    foto: body.foto,
     password: randomPassword,
   });
 
@@ -96,10 +99,10 @@ router.post("/login", async (req, res) => {
 
     console.log("User created", new_user)
 
-    await sendEmail.sendEmail({
-      email: new_user.email,
-      password: randomPassword
-    })
+    // await sendEmail.sendEmail({
+    //   email: new_user.correo,
+    //   password: randomPassword
+    // })
     res.status(201).send(new_user);
 
   } catch(error){
@@ -127,9 +130,9 @@ router.put("/login", async  (req, res) => {
   }
 
   try{
-    const user = await signUpM.findOneAndUpdate(
+    const user = await usersM.findOneAndUpdate(
       // Busca por el email con este primer argumento
-      { email: body.email,},
+      { correo: body.correo,},
       // Actualiza la contraseña con este segundo argumento usando $set para que sea en un campo espefico
       { $set: {password: randomPassword}},
       // Devuelve el usuario actualizado, si esto se devuelve el original
@@ -147,7 +150,7 @@ router.put("/login", async  (req, res) => {
    
 
     await sendEmail.sendEmailRecovery({
-      email: body.email,
+      email: body.correo,
       password: randomPassword
       
     })
