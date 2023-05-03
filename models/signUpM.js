@@ -63,5 +63,5 @@ const userSchema = new mongoose.Schema({
 
 
 
-const User = mongoose.model("pending_users", userSchema)
-module.exports =  User
+const ExternalUser = mongoose.model("User", userSchema)
+module.exports =  ExternalUser

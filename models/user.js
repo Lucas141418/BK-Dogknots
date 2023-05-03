@@ -11,7 +11,15 @@ const userSchema = new mongoose.Schema({
     unidad: { type: String, required: true },
     status: { type: String, required: true },
     role: { type: String, required: true },
+    foto:  { type: String, required: true },
     password: { type: String, required: true },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        get: function () {
+          return this.createdAt.toLocaleDateString();
+        }
+      }
 });
 
 const User = mongoose.model('User', userSchema);

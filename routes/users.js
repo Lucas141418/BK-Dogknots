@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var userModel = require("../models/user"); // USER MODEL
+var sendEmail = require("../lib/email"); // EMAIL
 
 /* GET users listing. */
 // localhost:3000/users/
@@ -49,26 +50,51 @@ router.post("/users", async (req, res) => {
   console.log("Saving...user");
   var newUser = new userModel(req.body);
 
-  const smtpOptions = {
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "infosistemasica@gmail.com",
-      pass: "uhntfrvdblxjtxxq",
-    },
-  };
-
   try {
     await newUser.save();
-    //res.status(201).send('User created: ' + newUser);
     console.log("User created");
 
-    // send json response
-    res.status(201).send(newUser);
+    await sendEmail.sendEmail({
+      email: newUser.correo,
+      password: randomPassword,
+    });
+
+    res.status(201).json(newUser);
   } catch (error) {
     console.error("Could not create user", error);
-    //res.status(500).send('Could not create user' + error);
+    res.status(500).json({ error: error });
+  }
+});
+
+router.put("/users/:id", async (req, res) => {
+  console.log("PUT /users");
+  var id = req.params.id;
+  console.log("Updating user: " + id);
+
+  if (!req.body) {
+    console.error("Bad Request");
+    res.status(500).send("Bad Request");
+    return;
+  }
+  const randomPassword = Math.random().toString(36).slice(-8);
+
+  try {
+    const updatedUser = await userModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    console.log("User updated:", updatedUser);
+    if (updatedUser.status === "activo") {
+      await sendEmail.changedUser({
+        email: updatedUser.correo,
+        state: updatedUser.status,
+        role: updatedUser.role,
+        password: randomPassword,
+      });
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Could not update user", error);
     res.status(500).json({ error: error });
   }
 });
