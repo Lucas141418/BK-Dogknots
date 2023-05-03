@@ -27,6 +27,7 @@ router.get("/transfers", async function (request, response) {
 //haciendo logica para traer valor:
 
 router.get("/transfers/pagination", async function (request, response) {
+  console.log("atendiendo la ruta de paginacion por unidad");
   try {
     const filterOptions = {
       $or: [
