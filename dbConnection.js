@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const router = express.Router()
 const signUpRoute = require("./routes/signUpRoute")
 // const reportingRoute = require("./routes/reportingRoute")
-const historialTraslados = require("./routes/historialTrasladosRoute")
+const historicoBitacora = require("./routes/historicoBitacora")
 const routesUnidades = require("./routes/unidades")
 const transferRoutes = require("./routes/transferRoutes")
 const usersRouter = require("./routes/users")
@@ -38,12 +38,12 @@ app.get("/", (request ,response) => {
 })       
 
 app.use(signUpRoute);
-// app.use(reportingRoute);
 app.use(historialTraslados);
 app.use(usersRouter);
 app.use(routesUnidades);
 app.use(transferRoutes);
-app.use(activosRouter)
+app.use(activosRouter);
+app.use(historicoBitacora);
 
 app.listen(PORT, () => {
     console.log(`Using the port ${PORT}`)  

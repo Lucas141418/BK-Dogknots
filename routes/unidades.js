@@ -21,7 +21,7 @@ router.get("/unidades/:id", async function (request, response) {
 router.get("/unidades", async function (request, response) {
     try {
         const units = await unitModel.find(request.query);
-        response.send(units);
+        response.status(201).send(units);
     } catch (error) {
         response.status(500).send(error);
     }
