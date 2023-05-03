@@ -1,10 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
-
+const transferEmail = require("../lib/email");
 const transferModel = require("../models/traslados");
 
 const router = express.Router();
-
 
 const app = express();
 
@@ -29,15 +28,18 @@ router.get("/transfers", async function (request, response) {
 
 router.get("/transfers/pagination", async function (request, response) {
   try {
-    // const filterOptions = {
-    //   isAccepted: false
-    // };
+    const filterOptions = {
+      $or: [
+        { currentUnit: request.query.unit },
+        { destinationUnit: request.query.unit },
+      ],
+    };
     const pageOptions = {
       page: request.query.page || 1,
       limit: request.query.limit || 5,
     };
 
-    let responseBody = await transferModel.paginate({}, pageOptions);
+    let responseBody = await transferModel.paginate(filterOptions, pageOptions);
     console.log(responseBody.docs);
     response.send(responseBody.docs);
   } catch (error) {
@@ -77,7 +79,6 @@ router.post("/createTransfer", async function (request, response) {
     let modifiedBody = {
       ...body,
       transferId: nextTransferId,
-      isPending: true,
     };
     console.log("Imprimiendo body con el transfer id incluido", modifiedBody);
     const transfer = new transferModel(modifiedBody);
@@ -99,6 +100,28 @@ router.get("/transfer", async (req, res) => {
     res.status(200).send(transferbyId);
   } catch (error) {
     res.status(500).send(error);
+  }
+});
+
+//Para actualizar una solicitud de traslado usando POST
+
+router.post("/updateTransfer", async function (request, response) {
+  console.log("Atendiendo a la ruta POST /updateTransfer", request);
+  try {
+    let body = request.body;
+    console.log("Imprimiendo body original", body);
+    const nextTransferId = await getNextTransferId(transferModel);
+    let modifiedBody = {
+      ...body,
+      transferId: nextTransferId,
+      isPending: true,
+    };
+    console.log("Imprimiendo body con el transfer id incluido", modifiedBody);
+    const transfer = new transferModel(modifiedBody);
+    await transfer.findOneAndUpdate({ transferId: body.transferId });
+    response.status(201).send(modifiedBody);
+  } catch (error) {
+    console.log(error);
   }
 });
 

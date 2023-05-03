@@ -16,7 +16,7 @@ router.get("/users", async function (req, res) {
 });
 
 // localhost:3000/users/:id
-router.get('/users/:id', async (req, res) => {
+router.get("/users/:id", async (req, res) => {
   var id = req.params.id;
   //res.send('users ID:' + id);
   try {
@@ -27,16 +27,16 @@ router.get('/users/:id', async (req, res) => {
     res.status(500).json({ error: error });
     //console.log('Could not get user', error);
   }
-}); 
+});
 
 // Create user
-router.post('/users', async (req, res) => {
+router.post("/users", async (req, res) => {
   //We call the route which we are working
-  console.log('POST /users');
+  console.log("POST /users");
 
   if (!req.body) {
-    console.error('Bad Request');
-    res.status(400).send('Bad Request');
+    console.error("Bad Request");
+    res.status(400).send("Bad Request");
     return;
   }
 
@@ -46,7 +46,7 @@ router.post('/users', async (req, res) => {
   // add password to the body
   req.body.password = randomPassword;
 
-  console.log('Saving...user');
+  console.log("Saving...user");
   var newUser = new userModel(req.body);
 
   const smtpOptions = {
@@ -54,26 +54,23 @@ router.post('/users', async (req, res) => {
     port: 465,
     secure: true,
     auth: {
-        user: 'infosistemasica@gmail.com',
-        pass: 'uhntfrvdblxjtxxq',
-    }
-};
+      user: "infosistemasica@gmail.com",
+      pass: "uhntfrvdblxjtxxq",
+    },
+  };
 
   try {
     await newUser.save();
     //res.status(201).send('User created: ' + newUser);
-    console.log('User created');
+    console.log("User created");
 
     // send json response
     res.status(201).send(newUser);
-
   } catch (error) {
-
-    console.error('Could not create user', error);
+    console.error("Could not create user", error);
     //res.status(500).send('Could not create user' + error);
     res.status(500).json({ error: error });
   }
-
 });
 
 module.exports = router;
