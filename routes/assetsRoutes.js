@@ -66,6 +66,31 @@ app.put("/activos/:id", async function (request, response) {
   }
 });
 
+//actualizando el activo al hacer el traslado
+
+//Updating an asset
+app.post("/actualizarActivo/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const assetUpdatedInfo = req.body;
+
+    console.log(`Attending the POST route: /assets/${id}`);
+
+    const result = await activoModel
+      .findOneAndUpdate({ idActivo: id }, assetUpdatedInfo, {
+        new: true,
+      })
+      .exec();
+
+    console.log("Activo actualizado", result);
+
+    res.status(200).send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error);
+  }
+});
+
 app.post("/activos", async function (request, response) {
   console.log("atendiendo a la ruta POST /activos", request);
 

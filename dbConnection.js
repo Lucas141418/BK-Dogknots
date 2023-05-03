@@ -31,18 +31,18 @@ app.use(cors({}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use((request, response, next) => {
-  response.header("Access-Control-Allow-Origin", "*");
-  response.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  response.header(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  next();
-});
+// app.use((request, response, next) => {
+//   response.header("Access-Control-Allow-Origin", "*");
+//   response.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   response.header(
+//     "Access-Control-Allow-Methods",
+//     "GET, POST, PUT, DELETE, OPTIONS"
+//   );
+//   next();
+// });
 
 app.get("/", (request, response) => {
   response.send("Hello, world!");
