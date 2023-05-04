@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const transferEmail = require("../lib/email");
 const transferModel = require("../models/traslados");
+var userModel = require("../models/user"); // USER MODEL
 
 const router = express.Router();
 
@@ -121,6 +122,31 @@ router.post("/updateTransfer", async function (request, response) {
     const transfer = new transferModel(modifiedBody);
     await transfer.findOneAndUpdate({ transferId: body.transferId });
     response.status(201).send(modifiedBody);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//para el correpo
+
+router.post("/sendEmail", async function (request, response) {
+  console.log("Atendiendo a la ruta POST /sendEmail", request);
+
+  try {
+    let body = request.body;
+    const user = userModel.find({ cedula: body.requestedBy });
+    console.log("Imprimiendo body original", body);
+
+    //  const { email, transferId, assetId, assetName, decision } = pEmailData;
+
+    await transferEmail.sendEmailTransfer({
+      email: user.email,
+      transferId: body.transferId,
+      assetId: body.assetId,
+      assetName: body.assetName,
+      decision: body.decision,
+    });
+    response.status(200).send(transferEmail);
   } catch (error) {
     console.log(error);
   }
