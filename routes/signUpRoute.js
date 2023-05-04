@@ -3,37 +3,37 @@ const router = express.Router();
 const sendEmail = require("../lib/email")
 const usersM = require("../models/user");
 
-
 const app = express();
 app.use(express.json());
 
 // route to get all users
 router.get("/login", async (req, res) => {
-
-  
-  try{
+  try {
     const users = await usersM.find({});
-    res.send(users)
-  } catch (error){
-    res.status(500).send(error)
-
+    res.send(users);
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 
 // route to login a user
 
-router.post('/loginUser', async (req, res) => {
-  const {correo, password} = req.body;
+router.post("/loginUser", async (req, res) => {
+  const { correo, password } = req.body;
 
-  if(!correo || !password ){
+  if (!correo || !password) {
     console.error("Did not send the body to the petition", correo, password);
-    res.status(400).send("Did not send the body to the petition")
+    res.status(400).send("Did not send the body to the petition");
     return;
   }
   
-  try{
-    const user = await usersM.findOne({ correo: correo });
+  
     
+
+
+  try {
+    const user = await signUpM.findOne({ email: email });
+
     if (!user) {
       console.log("user not found");
       res.status(404).json({ error: "User not found" });
@@ -74,13 +74,11 @@ router.post("/login", async (req, res) => {
 
   const randomPassword = Math.random().toString(36).slice(-8);
 
-
-
-  const new_user = new usersM(
-    {nombre: body.nombre,
+  const new_user = new usersM({
+    nombre: body.nombre,
     primerApellido: body.primerApellido,
     segundoApellido: body.segundoApellido,
-    cedula: body.cedula, 
+    cedula: body.cedula,
     correo: body.correo,
     telefono: body.telefono,
     fechaNacimiento: body.fechaNacimiento,
@@ -97,9 +95,7 @@ router.post("/login", async (req, res) => {
 
     console.log("User created", new_user);
 
-
     res.status(201).send(new_user);
-
 
     // await sendEmail.sendEmail({
     //   email: new_user.correo,
@@ -125,11 +121,10 @@ router.put("/login", async (req, res) => {
     return;
   }
 
-
-  try{
+  try {
     const user = await usersM.findOneAndUpdate(
       // Busca por el email con este primer argumento
-      { correo: body.correo,},
+      { correo: body.correo },
 
       // Actualiza la contraseña con este segundo argumento usando $set para que sea en un campo espefico
       { $set: { password: randomPassword } },
@@ -143,12 +138,9 @@ router.put("/login", async (req, res) => {
     }
 
     await sendEmail.sendEmailRecovery({
-
       email: body.correo,
-      password: randomPassword
-      
-    })
-
+      password: randomPassword,
+    });
 
     console.log("User updated");
     res.status(201).json(user);

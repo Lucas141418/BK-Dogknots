@@ -14,6 +14,7 @@ const transferSchema = new mongoose.Schema({
   image1: { type: String, required: true },
   image2: { type: String, required: true },
   isPending: { type: Boolean, required: true },
+  requestedBy: { type: String, required: true },
 });
 
 transferSchema.plugin(mongoosePaginate);
