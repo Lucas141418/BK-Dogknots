@@ -26,10 +26,14 @@ router.post("/loginUser", async (req, res) => {
     res.status(400).send("Did not send the body to the petition");
     return;
   }
+  
+  
+    
+
 
   try {
-    const user = await usersM.findOne({ correo: correo });
-    
+    const user = await signUpM.findOne({ email: email });
+
     if (!user) {
       console.log("user not found");
       res.status(404).json({ error: "User not found" });
