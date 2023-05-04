@@ -30,12 +30,17 @@ router.get("/transfers", async function (request, response) {
 router.get("/transfers/pagination", async function (request, response) {
   console.log("atendiendo la ruta de paginacion por unidad");
   try {
-    const filterOptions = {
-      $or: [
-        { currentUnit: request.query.unit },
-        { destinationUnit: request.query.unit },
-      ],
-    };
+    if (request.query.unit === "") {
+      filterOptions = {};
+    } else {
+      const filterOptions = {
+        $or: [
+          { currentUnit: request.query.unit },
+          { destinationUnit: request.query.unit },
+        ],
+      };
+    }
+
     const pageOptions = {
       page: request.query.page || 1,
       limit: request.query.limit || 5,

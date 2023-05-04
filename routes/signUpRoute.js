@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
-const sendEmail = require("../lib/email");
+const sendEmail = require("../lib/email")
 const usersM = require("../models/user");
 
 const app = express();
@@ -30,7 +29,7 @@ router.post("/loginUser", async (req, res) => {
 
   try {
     const user = await usersM.findOne({ correo: correo });
-
+    
     if (!user) {
       console.log("user not found");
       res.status(404).json({ error: "User not found" });
